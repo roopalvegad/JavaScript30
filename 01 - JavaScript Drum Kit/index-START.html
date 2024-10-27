@@ -59,9 +59,43 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+// Add an eventlistener for Keydown, 
+//and when that happens, we will run a function thay will play the sound
+//the same function will also add the key highlighting CSS to the keyblock
+//we have a CSS transition that is easing in as it is applied. 
+//then we will set up and event listener that will listen for 
+//the CSS transition end remove the highlight class from the keyblock
+
+function playSound(e) {
+  const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+  const key = document.querySelector(`.key[data-key="${e.keyCode}"`);
+  key.classList.add('playing');
+  if(!audio) return;
+  audio.currentTime = 0;
+  audio.play();
+}
+
+// we will need to set up the event listener on all the keyblocks.
+// this will be done by selecting querySelectorAll. Since the return type
+// of querySelectorAll is a Nodelist, we will need to iterate the
+// event listener on each of the class items
+
+function removeTransition(e){
+  if(e.propertyName!='transform') return;  // skip removeTransition if the propery that transitions is not a transform. 
+  this.classList.remove('playing')
+  // in this example 5 propery transitions and we selected one of them (transform) to track transitionend
+}
+
+const keys = document.querySelectorAll('.key');
+keys.forEach(key => key.addEventListener('transitionend',removeTransition))
+
+//added eventListener here. playSound function was defined above for modularity
+window.addEventListener('keydown', playSound);
+
 
 </script>
 
+  
 
 </body>
 </html>
